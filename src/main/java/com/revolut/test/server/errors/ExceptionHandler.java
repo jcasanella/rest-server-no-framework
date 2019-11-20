@@ -20,6 +20,7 @@ public class ExceptionHandler {
             OutputStream responseBody = exchange.getResponseBody();
             responseBody.write(objectMapper.writeValueAsBytes(response));
             responseBody.close();
+            exchange.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

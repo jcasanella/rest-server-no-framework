@@ -1,12 +1,9 @@
 package com.revolut.test.model;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor @RequiredArgsConstructor
 @Getter @Setter
-@RequiredArgsConstructor
 public class User {
     private @NonNull String name;
     private @NonNull String surname;

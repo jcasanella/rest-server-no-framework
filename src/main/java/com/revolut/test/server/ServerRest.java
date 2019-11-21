@@ -6,6 +6,7 @@ import com.revolut.test.model.User;
 import com.revolut.test.server.api.HandlerImpl;
 import com.revolut.test.server.api.ValidOpers;
 import com.revolut.test.server.constants.Headers;
+import com.revolut.test.server.constants.NameResources;
 import com.revolut.test.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.log4j.Logger;
@@ -45,7 +46,10 @@ public class ServerRest {
         log.info("Starting the server");
 
         HandlerImpl registrationHandler = new HandlerImpl(new ExceptionHandler());
-        server.createContext("/api/hello", registrationHandler::handle);
+        server.createContext(
+                String.format("/%s/%s", NameResources.VERSION, NameResources.USERS), // Create URI
+                registrationHandler::handle
+        );
 
         httpThreadPool = Executors.newFixedThreadPool(10);
         server.setExecutor(httpThreadPool);

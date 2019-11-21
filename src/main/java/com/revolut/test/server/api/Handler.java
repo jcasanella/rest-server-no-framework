@@ -1,10 +1,13 @@
 package com.revolut.test.server.api;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revolut.test.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpExchange;
 import io.vavr.control.Try;
 import org.apache.log4j.Logger;
+
+import java.util.function.Function;
 
 public abstract class Handler {
     protected static Logger log = Logger.getLogger(Handler.class);
@@ -21,4 +24,10 @@ public abstract class Handler {
     }
 
     protected abstract void execute(HttpExchange exchange) throws Exception;
+
+    // TODO: Create a better exception
+    protected <T> T get(HttpExchange exchange, Class<T> valueType) throws Exception {
+        return Try.of(() -> objectMapper.readValue(exchange.getRequestBody(), valueType))
+                .getOrElseThrow((() -> new RuntimeException("")));
+    }
 }

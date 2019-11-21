@@ -36,7 +36,7 @@ public class ClientTest {
     @Test
     public void firstTest() throws IOException {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = client.execute(new HttpGet("http://localhost:8001/api/hello"));
+        HttpResponse response = client.execute(new HttpGet("http://localhost:8001/%s/%s"));
         int statusCode = response.getStatusLine().getStatusCode();
         assertThat(statusCode, equalTo(HttpStatus.SC_OK));
 

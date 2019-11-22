@@ -22,21 +22,14 @@ public class HandlerImpl extends Handler {
 
         if ("GET".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing GET call to /%s/%s", NameResources.VERSION, NameResources.USERS));
-
             User user = new User("jordi", "casanella", "1 Barr Piece", "London");
             set(exchange, user);
-//            exchange.getResponseHeaders().set(Headers.CONTENT_TYPE, Headers.APPL_JSON);
-//            exchange.sendResponseHeaders(StatusCode.OK.getCode(), objectMapper.writeValueAsBytes(user).length);
-//            OutputStream output = exchange.getResponseBody();
-//
-//            output.write(objectMapper.writeValueAsBytes(user));
-//            output.flush();
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing POST call to /%s/%s", NameResources.VERSION, NameResources.USERS));
             User user = get(exchange, User.class);
             Operations ui = new UsersImpl();
             boolean res = ui.add(user);
-            log.info("User added " + res);
+            set(exchange, res);
         } else {
             throw new Exception("Bad Request");
         }

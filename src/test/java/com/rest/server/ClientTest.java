@@ -1,11 +1,15 @@
 package com.rest.server;
 
 import com.revolut.test.server.ServerRest;
+import com.revolut.test.server.constants.NameResources;
+import com.revolut.test.server.constants.StatusCode;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,15 +38,41 @@ public class ClientTest {
     }
 
     @Test
-    public void firstTest() throws IOException {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = client.execute(new HttpGet("http://localhost:8001/%s/%s"));
+    public void doGet() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(String.format("http://localhost:8001/%s/%s",
+                NameResources.VERSION, NameResources.USERS));
+
+        HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(HttpStatus.SC_OK));
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
         System.out.println(bodyAsString);
         assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doPost() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(String.format("http://localhost:8001/%s/%s",
+                NameResources.VERSION, NameResources.USERS));
+
+        String json = "{\"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"aaaa\" , \"city\" : \"fffff\"}";
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
+
+        CloseableHttpResponse response = client.execute(httpPost);
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+
+        client.close();
     }
 
     @AfterClass

@@ -15,13 +15,14 @@ public class HandlerImpl extends Handler {
     }
 
     private static Operations ui = new UsersImpl();
+    private static final String uriResources = "/" + NameResources.VERSION + "/" + NameResources.USERS;
 
     @Override
     protected void execute(HttpExchange exchange) throws Exception {
-        log.info(String.format("Call to /%s/%s", NameResources.VERSION, NameResources.USERS));
+        log.info("Call to " + uriResources);
 
         if ("GET".equals(exchange.getRequestMethod())) {
-            log.info(String.format("Processing GET call to /%s/%s", NameResources.VERSION, NameResources.USERS));
+            log.info("Processing GET " + exchange.getRequestURI().toString());
             List<String> args = getParam(exchange.getRequestURI().toString());
             if (args.isEmpty()) {
                 List<User> users = ui.getAll();
@@ -35,6 +36,14 @@ public class HandlerImpl extends Handler {
             User user = get(exchange, User.class);
             String key = ui.add(user);
             set(exchange, key);
+        } else if ("DELETE".equals(exchange.getRequestMethod())) {
+            log.info("Processing DELETE " + exchange.getRequestURI().toString());
+            List<String> args = getParam(exchange.getRequestURI().toString());
+            boolean res = false;
+            if (!args.isEmpty())
+                res = ui.delete(args.get(0));
+
+            set(exchange, res);
         } else {
             throw new Exception("Bad Request");
         }

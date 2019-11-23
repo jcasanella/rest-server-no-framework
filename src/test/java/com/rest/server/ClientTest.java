@@ -5,6 +5,7 @@ import com.revolut.test.server.constants.NameResources;
 import com.revolut.test.server.constants.StatusCode;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -82,6 +83,38 @@ public class ClientTest {
         HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS);
 
         HttpResponse response = client.execute(httpGet);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doDelete() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.USERS);
+
+        HttpResponse response = client.execute(httpDelete);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doDelete2() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.USERS + "/" + id);
+
+        HttpResponse response = client.execute(httpDelete);
         int statusCode = response.getStatusLine().getStatusCode();
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 

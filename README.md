@@ -4,3 +4,4 @@ curl -X POST localhost:8001/v1/users-service -d '{"name": "test" , "surname" : "
 curl -X GET localhost:8001/v1/users-service/test_test
 curl -X GET localhost:8001/v1/users-service/
 curl -X GET localhost:8001/v1/users-service
+curl -X DELETE localhost:8001/v1/users-service/test_test

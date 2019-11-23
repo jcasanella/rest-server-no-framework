@@ -10,7 +10,13 @@ import io.vavr.control.Try;
 import org.apache.log4j.Logger;
 
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public abstract class Handler {
     protected static Logger log = Logger.getLogger(Handler.class);
@@ -45,5 +51,14 @@ public abstract class Handler {
                     output.write(x);
                     output.flush();
                 }).onFailure(exc2 -> log.error(exc2.getMessage())));
+    }
+
+    protected Map<String, String> getParams(String args) {
+        if (args == null || "".equals(args))
+            return Collections.emptyMap();
+
+        return Pattern.compile("&").splitAsStream(args)
+                .map(x -> x.split("="))
+                .collect(Collectors.toMap(y -> y[0], y -> y[1]));
     }
 }

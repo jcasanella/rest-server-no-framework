@@ -7,16 +7,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+// TODO: Control errors
 public class UsersImpl implements Operations<User> {
     private Map<String, User> users = new ConcurrentHashMap<>();
 
     @Override
-    public boolean add(User a) {
+    public String add(User a) {
         if (users.get(a.getId()) != null)
-            return false;
+            return "NO_ADDED";
         else {
             users.put(a.getId(), a);
-            return true;
+            return a.getId();
         }
     }
 

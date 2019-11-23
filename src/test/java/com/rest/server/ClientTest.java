@@ -23,6 +23,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class ClientTest {
 
+    private String id = "test_test";
+    private static final String uriContext = "http://localhost:8001/" + NameResources.VERSION;
+
     @BeforeClass
     public static void startUp() {
         Runnable task = () -> {
@@ -40,8 +43,7 @@ public class ClientTest {
     @Test
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(String.format("http://localhost:8001/%s/%s",
-                NameResources.VERSION, NameResources.USERS));
+        HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.USERS);
 
         String json = "{\"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"aaaa\" , \"city\" : \"fffff\"}";
         StringEntity entity = new StringEntity(json);
@@ -52,8 +54,8 @@ public class ClientTest {
         CloseableHttpResponse response = client.execute(httpPost);
         assertThat(response.getStatusLine().getStatusCode(), equalTo(StatusCode.OK.getCode()));
 
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
+        id = EntityUtils.toString(response.getEntity());
+        System.out.println(id);
 
         client.close();
     }
@@ -61,8 +63,7 @@ public class ClientTest {
     @Test
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(String.format("http://localhost:8001/%s/%s",
-                NameResources.VERSION, NameResources.USERS));
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS + "/?id=" + id);
 
         HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();

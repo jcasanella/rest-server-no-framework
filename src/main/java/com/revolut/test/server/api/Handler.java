@@ -3,6 +3,7 @@ package com.revolut.test.server.api;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revolut.test.server.constants.Headers;
+import com.revolut.test.server.constants.NameResources;
 import com.revolut.test.server.constants.StatusCode;
 import com.revolut.test.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpExchange;
@@ -10,12 +11,15 @@ import io.vavr.control.Try;
 import org.apache.log4j.Logger;
 
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static io.vavr.Predicates.not;
 import static java.util.stream.Collectors.groupingBy;
 
 public abstract class Handler {
@@ -53,12 +57,16 @@ public abstract class Handler {
                 }).onFailure(exc2 -> log.error(exc2.getMessage())));
     }
 
-    protected Map<String, String> getParams(String args) {
-        if (args == null || "".equals(args))
-            return Collections.emptyMap();
+    protected List<String> getParam(String args) {
+        String urlResource = "/" + NameResources.VERSION + "/" + NameResources.USERS;
+        String urlResource2 = "/" + NameResources.VERSION + "/" + NameResources.USERS + "/";
 
-        return Pattern.compile("&").splitAsStream(args)
-                .map(x -> x.split("="))
-                .collect(Collectors.toMap(y -> y[0], y -> y[1]));
+        if (args == null || "".equals(args) || urlResource.equals(args) || urlResource2.equals(args))
+            return Collections.EMPTY_LIST;
+
+        return Arrays.stream(args.split("/"))
+                .skip(1)
+                .filter(not(x -> NameResources.USERS.equals(x) || NameResources.VERSION.equals(x)))
+                .collect(Collectors.toList());
     }
 }

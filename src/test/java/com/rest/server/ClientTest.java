@@ -63,7 +63,23 @@ public class ClientTest {
     @Test
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS + "/?id=" + id);
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS + "/" + id);
+
+        HttpResponse response = client.execute(httpGet);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doGetAll() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS);
 
         HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();

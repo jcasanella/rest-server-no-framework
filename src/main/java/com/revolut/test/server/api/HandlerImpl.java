@@ -5,11 +5,8 @@ import com.revolut.test.server.errors.ExceptionHandler;
 import com.revolut.test.service.Operations;
 import com.revolut.test.service.UsersImpl;
 import com.sun.net.httpserver.HttpExchange;
-import com.revolut.test.server.constants.StatusCode;
 import com.revolut.test.model.User;
-import com.revolut.test.server.constants.Headers;
-import java.io.OutputStream;
-import java.util.Map;
+import java.util.List;
 
 public class HandlerImpl extends Handler {
 
@@ -25,9 +22,14 @@ public class HandlerImpl extends Handler {
 
         if ("GET".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing GET call to /%s/%s", NameResources.VERSION, NameResources.USERS));
-            Map<String, String> params = getParams(exchange.getRequestURI().getRawQuery());
-            User user = (User)ui.get(params.get("id"));
-            set(exchange, user);
+            List<String> args = getParam(exchange.getRequestURI().toString());
+            if (args.isEmpty()) {
+                List<User> users = ui.getAll();
+                set(exchange, users);
+            } else {
+                User user = (User)ui.get(args.get(0));
+                set(exchange, user);
+            }
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing POST call to /%s/%s", NameResources.VERSION, NameResources.USERS));
             User user = get(exchange, User.class);

@@ -5,6 +5,7 @@ import com.revolut.rest.server.constants.Headers;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.constants.StatusCode;
 import com.revolut.rest.server.errors.ExceptionHandler;
+import com.revolut.rest.service.DataOper;
 import com.sun.net.httpserver.HttpExchange;
 import io.vavr.control.Try;
 import org.apache.log4j.Logger;
@@ -16,11 +17,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.vavr.Predicates.not;
-import static java.util.stream.Collectors.groupingBy;
 
 public abstract class Handler {
     protected static Logger log = Logger.getLogger(Handler.class);
     protected static ObjectMapper objectMapper = new ObjectMapper();
+    protected static DataOper ui = null;
     private final ExceptionHandler exceptionHandler;
 
     public Handler(ExceptionHandler exceptionHandler) {
@@ -53,9 +54,9 @@ public abstract class Handler {
                 }).onFailure(exc2 -> log.error(exc2.getMessage())));
     }
 
-    protected List<String> getParam(String args) {
-        String urlResource = "/" + NameResources.VERSION + "/" + NameResources.USERS;
-        String urlResource2 = "/" + NameResources.VERSION + "/" + NameResources.USERS + "/";
+    protected List<String> getParam(String args, String resource) {
+        String urlResource = "/" + NameResources.VERSION + "/" + resource;
+        String urlResource2 = "/" + NameResources.VERSION + "/" + resource + "/";
 
         if (args == null || "".equals(args) || urlResource.equals(args) || urlResource2.equals(args))
             return Collections.EMPTY_LIST;

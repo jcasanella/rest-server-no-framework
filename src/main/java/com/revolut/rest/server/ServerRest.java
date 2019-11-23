@@ -1,7 +1,8 @@
 package com.revolut.rest.server;
 
-import com.revolut.rest.money.api.StatusCode;
-import com.revolut.rest.server.api.HandlerImpl;
+import com.revolut.rest.server.api.Handler;
+import com.revolut.rest.server.api.HandlerAccountsImpl;
+import com.revolut.rest.server.api.HandlerUsersImpl;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -40,10 +41,16 @@ public class ServerRest {
         server = HttpServer.create(new InetSocketAddress(port), 0);
         log.info("Starting the server");
 
-        HandlerImpl registrationHandler = new HandlerImpl(new ExceptionHandler());
+        Handler registrationHandler = new HandlerUsersImpl(new ExceptionHandler());
         server.createContext(
                 String.format("/%s/%s", NameResources.VERSION, NameResources.USERS), // Create URI
                 registrationHandler::handle
+        );
+
+        Handler registrationHandler2 = new HandlerAccountsImpl(new ExceptionHandler());
+        server.createContext(
+                String.format("/%s/%s", NameResources.VERSION, NameResources.ACCOUNTS), // Create URI
+                registrationHandler2::handle
         );
 
         httpThreadPool = Executors.newFixedThreadPool(10);

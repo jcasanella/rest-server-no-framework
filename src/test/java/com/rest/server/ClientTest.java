@@ -1,8 +1,8 @@
 package com.rest.server;
 
-import com.revolut.test.server.ServerRest;
-import com.revolut.test.server.constants.NameResources;
-import com.revolut.test.server.constants.StatusCode;
+import com.revolut.rest.server.ServerRest;
+import com.revolut.rest.server.constants.NameResources;
+import com.revolut.rest.server.constants.StatusCode;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;

@@ -1,18 +1,13 @@
-package com.revolut.test.server;
+package com.revolut.rest.server;
 
-import com.revolut.test.server.api.Handler;
 import com.revolut.rest.money.api.StatusCode;
-import com.revolut.test.model.User;
-import com.revolut.test.server.api.HandlerImpl;
-import com.revolut.test.server.api.ValidOpers;
-import com.revolut.test.server.constants.Headers;
-import com.revolut.test.server.constants.NameResources;
-import com.revolut.test.server.errors.ExceptionHandler;
+import com.revolut.rest.server.api.HandlerImpl;
+import com.revolut.rest.server.constants.NameResources;
+import com.revolut.rest.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

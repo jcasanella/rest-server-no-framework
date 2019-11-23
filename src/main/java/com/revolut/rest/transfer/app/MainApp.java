@@ -1,6 +1,6 @@
-package com.revolut.test.transfer.app;
+package com.revolut.rest.transfer.app;
 
-import com.revolut.test.server.ServerRest;
+import com.revolut.rest.server.ServerRest;
 
 import java.io.IOException;
 

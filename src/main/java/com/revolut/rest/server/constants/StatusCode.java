@@ -1,4 +1,4 @@
-package com.revolut.test.server.constants;
+package com.revolut.rest.server.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

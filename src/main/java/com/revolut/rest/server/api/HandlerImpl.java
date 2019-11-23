@@ -1,11 +1,11 @@
-package com.revolut.test.server.api;
+package com.revolut.rest.server.api;
 
-import com.revolut.test.server.constants.NameResources;
-import com.revolut.test.server.errors.ExceptionHandler;
-import com.revolut.test.service.Operations;
-import com.revolut.test.service.UsersImpl;
+import com.revolut.rest.server.constants.NameResources;
+import com.revolut.rest.server.errors.ExceptionHandler;
+import com.revolut.rest.service.Operations;
+import com.revolut.rest.service.UsersImpl;
 import com.sun.net.httpserver.HttpExchange;
-import com.revolut.test.model.User;
+import com.revolut.rest.model.User;
 import java.util.List;
 
 public class HandlerImpl extends Handler {

@@ -1,11 +1,10 @@
-package com.revolut.test.server.api;
+package com.revolut.rest.server.api;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revolut.test.server.constants.Headers;
-import com.revolut.test.server.constants.NameResources;
-import com.revolut.test.server.constants.StatusCode;
-import com.revolut.test.server.errors.ExceptionHandler;
+import com.revolut.rest.server.constants.Headers;
+import com.revolut.rest.server.constants.NameResources;
+import com.revolut.rest.server.constants.StatusCode;
+import com.revolut.rest.server.errors.ExceptionHandler;
 import com.sun.net.httpserver.HttpExchange;
 import io.vavr.control.Try;
 import org.apache.log4j.Logger;
@@ -14,9 +13,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static io.vavr.Predicates.not;

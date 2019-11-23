@@ -1,4 +1,4 @@
-package com.revolut.test.server.errors;
+package com.revolut.rest.server.errors;
 
 import lombok.Builder;
 import lombok.Value;

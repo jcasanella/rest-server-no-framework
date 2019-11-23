@@ -1,8 +1,8 @@
-package com.revolut.test.server.errors;
+package com.revolut.rest.server.errors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revolut.test.server.constants.Headers;
-import com.revolut.test.server.constants.StatusCode;
+import com.revolut.rest.server.constants.Headers;
+import com.revolut.rest.server.constants.StatusCode;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;

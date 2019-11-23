@@ -1,4 +1,4 @@
-package com.revolut.test.service;
+package com.revolut.rest.service;
 
 import java.util.List;
 

@@ -5,3 +5,4 @@ curl -X GET localhost:8001/v1/users-service/test_test
 curl -X GET localhost:8001/v1/users-service/
 curl -X GET localhost:8001/v1/users-service
 curl -X DELETE localhost:8001/v1/users-service/test_test
+curl -X PUT localhost:8001/v1/users-service -d '{ "id": "test_test", "name": "test" , "surname" : "test" , "address" : "aaaa" , "city" : "fffff"}'

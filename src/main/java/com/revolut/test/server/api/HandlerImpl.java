@@ -34,8 +34,8 @@ public class HandlerImpl extends Handler {
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing POST call to /%s/%s", NameResources.VERSION, NameResources.USERS));
             User user = get(exchange, User.class);
-            String key = ui.add(user);
-            set(exchange, key);
+            User added = (User) ui.add(user);
+            set(exchange, (added == null));
         } else if ("DELETE".equals(exchange.getRequestMethod())) {
             log.info("Processing DELETE " + exchange.getRequestURI().toString());
             List<String> args = getParam(exchange.getRequestURI().toString());
@@ -44,6 +44,11 @@ public class HandlerImpl extends Handler {
                 res = ui.delete(args.get(0));
 
             set(exchange, res);
+        }  else if ("PUT".equals(exchange.getRequestMethod())) {
+            log.info("Processing PUT " + exchange.getRequestURI().toString());
+            User user = get(exchange, User.class);
+            User updated = (User) ui.update(user);
+            set(exchange, (updated != null && user != updated));
         } else {
             throw new Exception("Bad Request");
         }

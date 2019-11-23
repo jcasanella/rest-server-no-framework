@@ -12,13 +12,8 @@ public class UsersImpl implements Operations<User> {
     private Map<String, User> users = new ConcurrentHashMap<>();
 
     @Override
-    public String add(User a) {
-        if (users.get(a.getId()) != null)
-            return "NO_ADDED";
-        else {
-            users.put(a.getId(), a);
-            return a.getId();
-        }
+    public User add(User a) {
+        return users.put(a.getId(), a);
     }
 
     @Override
@@ -36,5 +31,10 @@ public class UsersImpl implements Operations<User> {
         return users.values()
                 .stream()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public User update(User a) {
+        return add(a);
     }
 }

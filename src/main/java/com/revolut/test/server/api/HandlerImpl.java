@@ -22,7 +22,13 @@ public class HandlerImpl extends Handler {
 
         if ("GET".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing GET call to /%s/%s", NameResources.VERSION, NameResources.USERS));
-            User user = new User("jordi", "casanella", "1 Barr Piece", "London");
+            User user = User.builder()
+                    .name("jordi")
+                    .surname("casanella")
+                    .address("1 Barr Piece")
+                    .city("London")
+                    .id()
+                    .build();
             set(exchange, user);
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info(String.format("Processing POST call to /%s/%s", NameResources.VERSION, NameResources.USERS));

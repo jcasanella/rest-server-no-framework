@@ -38,23 +38,6 @@ public class ClientTest {
     }
 
     @Test
-    public void doGet() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(String.format("http://localhost:8001/%s/%s",
-                NameResources.VERSION, NameResources.USERS));
-
-        HttpResponse response = client.execute(httpGet);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
-        client.close();
-    }
-
-    @Test
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(String.format("http://localhost:8001/%s/%s",
@@ -71,6 +54,23 @@ public class ClientTest {
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
         System.out.println(bodyAsString);
+
+        client.close();
+    }
+
+    @Test
+    public void doGet() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(String.format("http://localhost:8001/%s/%s",
+                NameResources.VERSION, NameResources.USERS));
+
+        HttpResponse response = client.execute(httpGet);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
 
         client.close();
     }

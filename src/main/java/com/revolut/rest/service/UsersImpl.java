@@ -1,34 +1,31 @@
 package com.revolut.rest.service;
 
+import com.revolut.rest.data.DataMemory;
 import com.revolut.rest.model.User;
-
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 // TODO: Control errors
-public class UsersImpl implements Operations<User> {
-    private Map<String, User> users = new ConcurrentHashMap<>();
+public class UsersImpl implements DataOper<User> {
 
     @Override
     public User add(User a) {
-        return users.put(a.getId(), a);
+        return DataMemory.users.put(a.getId(), a);
     }
 
     @Override
     public boolean delete(String key) {
-        return (users.remove(key) != null);
+        return (DataMemory.users.remove(key) != null);
     }
 
     @Override
     public User get(String key) {
-        return users.get(key);
+        return DataMemory.users.get(key);
     }
 
     @Override
     public List<User> getAll() {
-        return users.values()
+        return DataMemory.users.values()
                 .stream()
                 .collect(Collectors.toList());
     }

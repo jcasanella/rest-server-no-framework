@@ -47,7 +47,7 @@ public class HandlerUsersImpl extends Handler {
                 res = ui.delete(args.get(0));
 
             set(exchange, res);
-        }  else if ("PUT".equals(exchange.getRequestMethod())) {
+        } else if ("PUT".equals(exchange.getRequestMethod())) {
             log.info("Processing PUT " + exchange.getRequestURI().toString());
             User user = get(exchange, User.class);
             User updated = (User) ui.update(user);

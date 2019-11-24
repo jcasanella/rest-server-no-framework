@@ -6,9 +6,7 @@ import com.revolut.rest.server.ServerRest;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.constants.StatusCode;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -22,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class AccountTest {
 
@@ -87,7 +84,60 @@ public class AccountTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Account[] accounts = objectMapper.readValue(bodyAsString, Account[].class);
 
-        Arrays.stream(accounts).forEach(x -> System.out.println(x.toString()));
+        HttpGet httpGet2 = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS + "/" + accounts[0].getId());
+        HttpResponse response2 = client.execute(httpGet2);
+        int statusCode2 = response2.getStatusLine().getStatusCode();
+        assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString2 = EntityUtils.toString(response2.getEntity());
+        System.out.println(bodyAsString2);
+        assertThat(bodyAsString2, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doDelete() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.ACCOUNTS);
+
+        HttpResponse response = client.execute(httpDelete);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doDelete2() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS);
+
+        HttpResponse response = client.execute(httpGet);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString = EntityUtils.toString(response.getEntity());
+        System.out.println(bodyAsString);
+        assertThat(bodyAsString, notNullValue());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account[] accounts = objectMapper.readValue(bodyAsString, Account[].class);
+
+
+        HttpDelete httpDelete2 = new HttpDelete(uriContext + "/" + NameResources.ACCOUNTS + "/" + accounts[0].getId());
+
+        HttpResponse response2 = client.execute(httpDelete2);
+        int statusCode2 = response.getStatusLine().getStatusCode();
+        assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString2 = EntityUtils.toString(response2.getEntity());
+        System.out.println(bodyAsString2);
+        assertThat(bodyAsString2, notNullValue());
 
         client.close();
     }

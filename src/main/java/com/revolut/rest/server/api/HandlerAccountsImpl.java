@@ -48,11 +48,14 @@ public class HandlerAccountsImpl extends Handler {
                 res = ui.delete(args.get(0));
 
             set(exchange, res);
-        }  else if ("PUT".equals(exchange.getRequestMethod())) {
-            log.info("Processing PUT " + exchange.getRequestURI().toString());
-            Account account = get(exchange, Account.class);
-            Account updated = (Account) ui.update(account);
-            set(exchange, (updated != null && account != updated));
+        }  else if ("DELETE".equals(exchange.getRequestMethod())) {
+            log.info("Processing DELETE " + exchange.getRequestURI().toString());
+            List<String> args = getParam(exchange.getRequestURI().toString(), NameResources.ACCOUNTS);
+            boolean res = false;
+            if (!args.isEmpty())
+                res = ui.delete(args.get(0));
+
+            set(exchange, res);
         } else {
             throw new Exception("Bad Request");
         }

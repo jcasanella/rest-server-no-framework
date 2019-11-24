@@ -38,7 +38,10 @@ public class HandlerUsersImpl extends Handler {
             log.info("Processing POST " + exchange.getRequestURI().toString());
             User user = get(exchange, User.class);
             User added = (User) ui.add(user);
-            set(exchange, (added == null));
+            if (added == null)
+                set(exchange, user);
+            else
+                set(exchange, "ERROR");
         } else if ("DELETE".equals(exchange.getRequestMethod())) {
             log.info("Processing DELETE " + exchange.getRequestURI().toString());
             List<String> args = getParam(exchange.getRequestURI().toString(), NameResources.USERS);

@@ -38,8 +38,8 @@ public class HandlerAccountsImpl extends Handler {
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info("Processing POST " + exchange.getRequestURI().toString());
             Account account = get(exchange, Account.class);
-            Account added = (Account) ui.add(account);
-            set(exchange, (added == null));
+            ui.add(account);
+            set(exchange, account);
         } else if ("DELETE".equals(exchange.getRequestMethod())) {
             log.info("Processing DELETE " + exchange.getRequestURI().toString());
             List<String> args = getParam(exchange.getRequestURI().toString(), NameResources.ACCOUNTS);
@@ -52,7 +52,7 @@ public class HandlerAccountsImpl extends Handler {
             log.info("Processing PUT " + exchange.getRequestURI().toString());
             Account account = get(exchange, Account.class);
             Account updated = (Account) ui.update(account);
-            set(exchange, (updated != null && account != updated));
+            set(exchange, updated);
         } else {
             throw new Exception("Bad Request");
         }

@@ -2,6 +2,7 @@ package com.rest.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revolut.rest.model.Account;
+import com.revolut.rest.model.User;
 import com.revolut.rest.server.ServerRest;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.constants.StatusCode;
@@ -20,10 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class AccountTest {
 
-    private String id = "test_test";
     private static final String uriContext = "http://localhost:8001/" + NameResources.VERSION;
 
     @BeforeClass
@@ -40,66 +41,58 @@ public class AccountTest {
         thread.start();
     }
 
-    @Test
-    public void doPost() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
+    private User addUser(CloseableHttpClient client, String name, String surname, String address, String city) throws IOException {
         HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.USERS);
 
-        String userJson = "{\"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"aaaa\" , \"city\" : \"fffff\"}";
+        String userJson = String.format("{\"name\": \"%s\" , \"surname\" : \"%s\" , \"address\" : \"%s\" , \"city\" : \"%s\"}",
+                name, surname, address, city);
         StringEntity userEntity = new StringEntity(userJson);
         httpPost.setEntity(userEntity);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
         CloseableHttpResponse userResponse = client.execute(httpPost);
 
-        HttpPost httpPost2 = new HttpPost(uriContext + "/" + NameResources.ACCOUNTS);
+        String userBodyAsString = EntityUtils.toString(userResponse.getEntity());
+        ObjectMapper objectMapper = new ObjectMapper();
+        User userRet = objectMapper.readValue(userBodyAsString, User.class);
 
-        String accJson = String.format("{ \"userId\": \"%s\", \"balance\": \"0\"}", id);
-        StringEntity accEntity = new StringEntity(accJson);
-        httpPost2.setEntity(accEntity);
-        httpPost2.setHeader("Accept", "application/json");
-        httpPost2.setHeader("Content-type", "application/json");
-
-        CloseableHttpResponse accountResponse = client.execute(httpPost2);
-        String account = EntityUtils.toString(accountResponse.getEntity());
-
-        System.out.println(account);
-
-        client.close();
+        return userRet;
     }
 
-    @Test
-    public void doGet() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS);
+    private Account addAccount(CloseableHttpClient client, String userId) throws IOException {
+        HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.ACCOUNTS);
 
-        HttpResponse response = client.execute(httpGet);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+        String accJson = String.format("{ \"userId\": \"%s\", \"balance\": \"0\"}", userId);
+        StringEntity accEntity = new StringEntity(accJson);
+        httpPost.setEntity(accEntity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
 
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
+        CloseableHttpResponse accountResponse = client.execute(httpPost);
+        String accountBodyAsString = EntityUtils.toString(accountResponse.getEntity());
         ObjectMapper objectMapper = new ObjectMapper();
-        Account[] accounts = objectMapper.readValue(bodyAsString, Account[].class);
+        Account accountRet = objectMapper.readValue(accountBodyAsString, Account.class);
 
-        HttpGet httpGet2 = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS + "/" + accounts[0].getId());
+        return accountRet;
+    }
+
+    private Account getAccount(CloseableHttpClient client, String accountId) throws IOException {
+        HttpGet httpGet2 = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS + "/" + accountId);
 
         HttpResponse response2 = client.execute(httpGet2);
-        int statusCode2 = response.getStatusLine().getStatusCode();
+        int statusCode2 = response2.getStatusLine().getStatusCode();
         assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString2 = EntityUtils.toString(response2.getEntity());
-        System.out.println(bodyAsString2);
-        assertThat(bodyAsString, notNullValue());
+        assertThat(bodyAsString2, notNullValue());
 
-        client.close();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account accountRet = objectMapper.readValue(bodyAsString2, Account.class);
+
+        return accountRet;
     }
 
-    @Test
-    public void doDelete() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
+    private Account[] getAccounts(CloseableHttpClient client) throws IOException {
         HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.ACCOUNTS);
 
         HttpResponse response = client.execute(httpGet);
@@ -113,7 +106,11 @@ public class AccountTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Account[] accounts = objectMapper.readValue(bodyAsString, Account[].class);
 
-        HttpDelete httpDelete2 = new HttpDelete(uriContext + "/" + NameResources.ACCOUNTS + "/" + accounts[0].getId());
+        return accounts;
+    }
+
+    private boolean deleteAccount(CloseableHttpClient client, String accountId) throws IOException {
+        HttpDelete httpDelete2 = new HttpDelete(uriContext + "/" + NameResources.ACCOUNTS + "/" + accountId);
 
         HttpResponse response2 = client.execute(httpDelete2);
         int statusCode2 = response2.getStatusLine().getStatusCode();
@@ -123,21 +120,61 @@ public class AccountTest {
         System.out.println(bodyAsString2);
         assertThat(bodyAsString2, notNullValue());
 
+        return Boolean.parseBoolean(bodyAsString2);
+    }
+
+    private Account updateAccount(CloseableHttpClient client, String accountId, BigDecimal quantity) throws IOException {
+        HttpPut httpPut = new HttpPut(uriContext + "/" + NameResources.ACCOUNTS);
+
+        String accJson = String.format("{ \"id\": \"%s\", \"balance\": \"%s\"}", accountId, quantity.setScale(3).toPlainString());
+        StringEntity entity = new StringEntity(accJson);
+        httpPut.setEntity(entity);
+        httpPut.setHeader("Accept", "application/json");
+        httpPut.setHeader("Content-type", "application/json");
+
+        HttpResponse response3 = client.execute(httpPut);
+        int statusCode = response3.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
+        String bodyAsString3 = EntityUtils.toString(response3.getEntity());
+        System.out.println(bodyAsString3);
+        assertThat(bodyAsString3, notNullValue());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account accUpdated = objectMapper.readValue(bodyAsString3, Account.class);
+
+        return accUpdated;
+    }
+
+    @Test
+    public void doPost() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        User added = addUser(client, "nameTest", "surnameTest", "addressTest", "cityTest");
+        addAccount(client, added.getId());
+
         client.close();
     }
 
     @Test
-    public void doDelete2() throws IOException {
+    public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.ACCOUNTS + "/" + id);
 
-        HttpResponse response = client.execute(httpDelete);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+        User added = addUser(client, "nameTest5", "surnameTest5", "addressTest5", "cityTest5");
+        addAccount(client, added.getId());
 
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        Account[] accounts = getAccounts(client);
+        getAccount(client, accounts[0].getId());
+
+        client.close();
+    }
+
+    @Test
+    public void doDelete() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        Account[] accounts = getAccounts(client);
+        deleteAccount(client, accounts[0].getId());
 
         client.close();
     }
@@ -145,21 +182,10 @@ public class AccountTest {
     @Test
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(uriContext + "/" + NameResources.ACCOUNTS);
 
-//        String json = "{\"id\": \"test_test\", \"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"bbbbb\" , \"city\" : \"fffff\"}";
-//        StringEntity entity = new StringEntity(json);
-//        httpPut.setEntity(entity);
-//        httpPut.setHeader("Accept", "application/json");
-//        httpPut.setHeader("Content-type", "application/json");
-//
-//        HttpResponse response = client.execute(httpPut);
-//        int statusCode = response.getStatusLine().getStatusCode();
-//        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-//
-//        String bodyAsString = EntityUtils.toString(response.getEntity());
-//        System.out.println(bodyAsString);
-//        assertThat(bodyAsString, notNullValue());
+        User added = addUser(client, "nameTest2", "surnameTest2", "addressTest", "cityTest");
+        Account account = addAccount(client, added.getId());
+        updateAccount(client, account.getId(), new BigDecimal(2000));
 
         client.close();
     }

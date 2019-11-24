@@ -11,7 +11,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class AccountTest extends AccountActions{
+public class AccountTest {
+
+    private AccountClient ac = new AccountClient();
+    private UserClient uc = new UserClient();
 
     @BeforeClass
     public static void startUp() {
@@ -31,8 +34,8 @@ public class AccountTest extends AccountActions{
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User added = addUser(client, "nameTest", "surnameTest", "addressTest", "cityTest");
-        addAccount(client, added.getId());
+        User added = uc.addUser(client, "nameTest", "surnameTest", "addressTest", "cityTest");
+        ac.addAccount(client, added.getId());
 
         client.close();
     }
@@ -41,11 +44,11 @@ public class AccountTest extends AccountActions{
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User added = addUser(client, "nameTest5", "surnameTest5", "addressTest5", "cityTest5");
-        addAccount(client, added.getId());
+        User added = uc.addUser(client, "nameTest5", "surnameTest5", "addressTest5", "cityTest5");
+        ac.addAccount(client, added.getId());
 
-        Account[] accounts = getAccounts(client);
-        getAccount(client, accounts[0].getId());
+        Account[] accounts = ac.getAccounts(client);
+        ac.getAccount(client, accounts[0].getId());
 
         client.close();
     }
@@ -54,8 +57,8 @@ public class AccountTest extends AccountActions{
     public void doDelete() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        Account[] accounts = getAccounts(client);
-        deleteAccount(client, accounts[0].getId());
+        Account[] accounts = ac.getAccounts(client);
+        ac.deleteAccount(client, accounts[0].getId());
 
         client.close();
     }
@@ -64,9 +67,9 @@ public class AccountTest extends AccountActions{
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User added = addUser(client, "nameTest2", "surnameTest2", "addressTest", "cityTest");
-        Account account = addAccount(client, added.getId());
-        updateAccount(client, account.getId(), new BigDecimal(2000));
+        User added = uc.addUser(client, "nameTest2", "surnameTest2", "addressTest", "cityTest");
+        Account account = ac.addAccount(client, added.getId());
+        ac.updateAccount(client, account.getId(), new BigDecimal(2000));
 
         client.close();
     }

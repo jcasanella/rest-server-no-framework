@@ -2,6 +2,7 @@ package com.revolut.rest.server;
 
 import com.revolut.rest.server.api.Handler;
 import com.revolut.rest.server.api.HandlerAccountsImpl;
+import com.revolut.rest.server.api.HandlerUserPaymentsImpl;
 import com.revolut.rest.server.api.HandlerUsersImpl;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.errors.ExceptionHandler;
@@ -51,6 +52,12 @@ public class ServerRest {
         server.createContext(
                 String.format("/%s/%s", NameResources.VERSION, NameResources.ACCOUNTS), // Create URI
                 registrationHandler2::handle
+        );
+
+        Handler registrationHandler3 = new HandlerUserPaymentsImpl(new ExceptionHandler());
+        server.createContext(
+                String.format("/%s/%s", NameResources.VERSION, NameResources.USERS_PAYMENTS), // Create URI
+                registrationHandler3::handle
         );
 
         httpThreadPool = Executors.newFixedThreadPool(10);

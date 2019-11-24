@@ -16,11 +16,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public abstract class UserActions {
+public class UserClient {
 
     private final String uriContext = "http://localhost:8001/" + NameResources.VERSION;
 
-    final protected User addUser(CloseableHttpClient client, String name, String surname, String address, String city) throws IOException {
+    final protected User addUser(CloseableHttpClient client, String name, String surname, String address, String city)
+            throws IOException {
+
         HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.USERS);
 
         String userJson = String.format("{\"name\": \"%s\" , \"surname\" : \"%s\" , \"address\" : \"%s\" , \"city\" : \"%s\"}",

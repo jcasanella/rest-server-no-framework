@@ -9,7 +9,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.IOException;
 
-public class UserTest extends UserActions{
+public class UserTest {
+
+    private UserClient uc = new UserClient();
 
     @BeforeClass
     public static void startUp() {
@@ -29,7 +31,7 @@ public class UserTest extends UserActions{
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-       addUser(client, "test_name", "surname_test", "address_test", "city_test");
+       uc.addUser(client, "test_name", "surname_test", "address_test", "city_test");
 
         client.close();
     }
@@ -38,8 +40,8 @@ public class UserTest extends UserActions{
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = addUser(client, "test_name", "surname_test", "address_test", "city_test");
-        getUser(client, user.getId());
+        User user = uc.addUser(client, "test_name", "surname_test", "address_test", "city_test");
+        uc.getUser(client, user.getId());
 
         client.close();
     }
@@ -48,7 +50,7 @@ public class UserTest extends UserActions{
     public void doGetAll() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        getUsers(client);
+        uc.getUsers(client);
 
         client.close();
     }
@@ -57,9 +59,9 @@ public class UserTest extends UserActions{
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = addUser(client, "name_test7", "surname_test7", "address_test7",
+        User user = uc.addUser(client, "name_test7", "surname_test7", "address_test7",
                 "city_test7");
-        updateUser(client, user.getId(), "name_test7", "surname_test7", "address_updated",
+        uc.updateUser(client, user.getId(), "name_test7", "surname_test7", "address_updated",
                 "city_updated");
 
         client.close();
@@ -69,7 +71,7 @@ public class UserTest extends UserActions{
     public void doDelete() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        deleteUser(client, "");
+        uc.deleteUser(client, "");
 
         client.close();
     }
@@ -78,9 +80,9 @@ public class UserTest extends UserActions{
     public void doDelete2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = addUser(client, "name_test8", "surname_test8", "address_test8",
+        User user = uc.addUser(client, "name_test8", "surname_test8", "address_test8",
                 "city_test8");
-        deleteUser(client, user.getId());
+        uc.deleteUser(client, user.getId());
 
         client.close();
     }

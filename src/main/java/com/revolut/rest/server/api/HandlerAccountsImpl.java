@@ -48,15 +48,7 @@ public class HandlerAccountsImpl extends Handler {
                 res = ui.delete(args.get(0));
 
             set(exchange, res);
-        }  else if ("DELETE".equals(exchange.getRequestMethod())) {
-            log.info("Processing DELETE " + exchange.getRequestURI().toString());
-            List<String> args = getParam(exchange.getRequestURI().toString(), NameResources.ACCOUNTS);
-            boolean res = false;
-            if (!args.isEmpty())
-                res = ui.delete(args.get(0));
-
-            set(exchange, res);
-        } else {
+        }  else {
             throw new Exception("Bad Request");
         }
 

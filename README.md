@@ -15,7 +15,7 @@ curl -X PUT localhost:8001/v1/users-service -d '{ "id": "test_test", "name": "te
 
 ```
 curl -X POST localhost:8001/v1/accounts-service -d '{"userId": "test_test", "balance": "0"}'
-curl -X GET localhost:8001/v1/accounts-service'
-curl -X GET localhost:8001/v1/accounts-service/sffsfsssfs33
-curl -X DELETE localhost:8001/v1/accounts-service/sffsfsssfs33
+curl -X GET localhost:8001/v1/accounts-service
+curl -X GET localhost:8001/v1/accounts-service/sfsfsfsfsfsfs
+curl -X DELETE localhost:8001/v1/accounts-service/sfsfsfsfsfsfs
 ```

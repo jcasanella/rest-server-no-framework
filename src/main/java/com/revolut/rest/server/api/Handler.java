@@ -63,7 +63,7 @@ public abstract class Handler {
 
         return Arrays.stream(args.split("/"))
                 .skip(1)
-                .filter(not(x -> resource.equals(x) || NameResources.VERSION.equals(x)))
+                .filter(not(x -> NameResources.ACCOUNTS.equals(x) || NameResources.VERSION.equals(x)))
                 .collect(Collectors.toList());
     }
 }

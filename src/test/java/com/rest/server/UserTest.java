@@ -1,5 +1,6 @@
 package com.rest.server;
 
+import com.revolut.rest.model.User;
 import com.revolut.rest.server.ServerRest;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.constants.StatusCode;
@@ -19,10 +20,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 
-public class UserTest {
+public class UserTest extends UserActions{
 
     private String id = "test_test";
-    private static final String uriContext = "http://localhost:8001/" + NameResources.VERSION;
 
     @BeforeClass
     public static void startUp() {
@@ -41,19 +41,8 @@ public class UserTest {
     @Test
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.USERS);
 
-        String json = "{\"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"aaaa\" , \"city\" : \"fffff\"}";
-        StringEntity entity = new StringEntity(json);
-        httpPost.setEntity(entity);
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
-
-        CloseableHttpResponse response = client.execute(httpPost);
-        assertThat(response.getStatusLine().getStatusCode(), equalTo(StatusCode.OK.getCode()));
-
-        id = EntityUtils.toString(response.getEntity());
-        System.out.println(id);
+       addUser(client, "test_name", "surname_test", "address_test", "city_test");
 
         client.close();
     }
@@ -61,15 +50,9 @@ public class UserTest {
     @Test
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS + "/" + id);
 
-        HttpResponse response = client.execute(httpGet);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        User user = addUser(client, "test_name", "surname_test", "address_test", "city_test");
+        getUser(client, user.getId());
 
         client.close();
     }
@@ -77,15 +60,8 @@ public class UserTest {
     @Test
     public void doGetAll() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS);
 
-        HttpResponse response = client.execute(httpGet);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        getUsers(client);
 
         client.close();
     }

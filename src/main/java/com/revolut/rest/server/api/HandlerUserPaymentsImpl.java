@@ -37,7 +37,7 @@ public class HandlerUserPaymentsImpl extends Handler {
         } else if ("POST".equals(exchange.getRequestMethod())) {
             log.info("Processing POST " + exchange.getRequestURI().toString());
             UserPayment userPayment = get(exchange, UserPayment.class);
-            UserPayment added = ui.add(userPayment);
+            ui.add(userPayment);
             set(exchange, userPayment);
         } else {
             throw new Exception("Bad Request");

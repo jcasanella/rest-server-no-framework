@@ -10,15 +10,13 @@ import java.util.List;
 
 public class HandlerUsersImpl extends Handler {
 
-    private static DataOper ui = new UsersImpl();
+    private static DataOper ui;
     private static final String uriResources = "/" + NameResources.VERSION + "/" + NameResources.USERS;
 
     public HandlerUsersImpl(ExceptionHandler exceptionHandler) {
         super(exceptionHandler);
         ui = new UsersImpl();
     }
-
-    public static DataOper getDataOper() { return ui; }
 
     @Override
     protected void execute(HttpExchange exchange) throws Exception {

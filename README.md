@@ -18,4 +18,5 @@ curl -X POST localhost:8001/v1/accounts-service -d '{"userId": "test_test", "bal
 curl -X GET localhost:8001/v1/accounts-service
 curl -X GET localhost:8001/v1/accounts-service/sfsfsfsfsfsfs
 curl -X DELETE localhost:8001/v1/accounts-service/sfsfsfsfsfsfs
+curl -x UPDATE localhost:8001/v1/accounts-service -d '{"id": "idAccount", "balance": "2000"}'
 ```

@@ -43,4 +43,9 @@ public class Account {
 
         this.balance = res;
     }
+
+    public boolean canOperate(BigDecimal quantity) {
+        BigDecimal res = this.balance.add(quantity);
+        return (res.compareTo(BigDecimal.ZERO) < 0);
+    }
 }

@@ -6,4 +6,6 @@ public class NameResources {
     public static final String USERS = "users-service";
 
     public static final String ACCOUNTS = "accounts-service";
+
+    public static final String USERS_PAYMENTS = "users-payments-service";
 }

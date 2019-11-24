@@ -6,10 +6,7 @@ import com.revolut.rest.server.ServerRest;
 import com.revolut.rest.server.constants.NameResources;
 import com.revolut.rest.server.constants.StatusCode;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -141,6 +138,28 @@ public class AccountTest {
         String bodyAsString = EntityUtils.toString(response.getEntity());
         System.out.println(bodyAsString);
         assertThat(bodyAsString, notNullValue());
+
+        client.close();
+    }
+
+    @Test
+    public void doUpdate() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPut httpPut = new HttpPut(uriContext + "/" + NameResources.ACCOUNTS);
+
+//        String json = "{\"id\": \"test_test\", \"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"bbbbb\" , \"city\" : \"fffff\"}";
+//        StringEntity entity = new StringEntity(json);
+//        httpPut.setEntity(entity);
+//        httpPut.setHeader("Accept", "application/json");
+//        httpPut.setHeader("Content-type", "application/json");
+//
+//        HttpResponse response = client.execute(httpPut);
+//        int statusCode = response.getStatusLine().getStatusCode();
+//        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+//
+//        String bodyAsString = EntityUtils.toString(response.getEntity());
+//        System.out.println(bodyAsString);
+//        assertThat(bodyAsString, notNullValue());
 
         client.close();
     }

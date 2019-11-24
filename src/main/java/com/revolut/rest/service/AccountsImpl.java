@@ -4,7 +4,6 @@ import com.revolut.rest.data.DataMemory;
 import com.revolut.rest.model.Account;
 import com.revolut.rest.model.User;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AccountsImpl implements DataOper<Account> {
@@ -21,17 +20,24 @@ public class AccountsImpl implements DataOper<Account> {
 
     @Override
     public boolean delete(String key) {
-        return false;
+        return (DataMemory.accounts.remove(key) != null);
     }
 
     @Override
     public Account get(String key) {
-        return null;
+        return DataMemory.accounts.get(key);
     }
 
     @Override
     public Account update(Account a) {
-        return null;
+        Account toBeUpdated = DataMemory.accounts.get(a.getId());
+
+        try {
+            toBeUpdated.addQuantity(a.getBalance());
+            return DataMemory.accounts.put(toBeUpdated.getId(), toBeUpdated);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override

@@ -16,31 +16,26 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Data
-public class Account {
+public class UserPayment {
     private String id;
-    private @NonNull String userId;
+    private @NonNull  String srcAccountId;
+    private @NonNull BigDecimal quantity;
+    private @NonNull String trgAccountId;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dateCreation;
-    private @NonNull BigDecimal balance;
+    private LocalDate datePayment;
 
-    public Account() {
+    public UserPayment() {
 
     }
 
     @JsonCreator
-    public Account(@JsonProperty("userId") String userId, @JsonProperty("balance") BigDecimal balance) {
+    public UserPayment(@JsonProperty("srcAccountId") String srcAccountId, @JsonProperty("quantity") BigDecimal quantity,
+                       @JsonProperty("trgAccountId") String trgAccountId) {
         this.id = UUID.randomUUID().toString();
-        this.userId = userId;
-        this.dateCreation = LocalDate.now();
-        this.balance = balance;
-    }
-
-    public void addQuantity(BigDecimal quantity) throws Exception {
-        BigDecimal res = this.balance.add(quantity);
-        if (res.compareTo(BigDecimal.ZERO) < 0)
-            throw new Exception("Not enough quantity to make this operation");
-
-        this.balance = res;
+        this.srcAccountId = srcAccountId;
+        this.quantity = quantity;
+        this.trgAccountId = trgAccountId;
+        this.datePayment = LocalDate.now();
     }
 }

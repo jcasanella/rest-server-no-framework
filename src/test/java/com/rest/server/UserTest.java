@@ -2,27 +2,14 @@ package com.rest.server;
 
 import com.revolut.rest.model.User;
 import com.revolut.rest.server.ServerRest;
-import com.revolut.rest.server.constants.NameResources;
-import com.revolut.rest.server.constants.StatusCode;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.notNullValue;
-
-
 public class UserTest extends UserActions{
-
-    private String id = "test_test";
 
     @BeforeClass
     public static void startUp() {
@@ -69,21 +56,11 @@ public class UserTest extends UserActions{
     @Test
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(uriContext + "/" + NameResources.USERS);
 
-        String json = "{\"id\": \"test_test\", \"name\": \"test\" , \"surname\" : \"test\" , \"address\" : \"bbbbb\" , \"city\" : \"fffff\"}";
-        StringEntity entity = new StringEntity(json);
-        httpPut.setEntity(entity);
-        httpPut.setHeader("Accept", "application/json");
-        httpPut.setHeader("Content-type", "application/json");
-
-        HttpResponse response = client.execute(httpPut);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        User user = addUser(client, "name_test7", "surname_test7", "address_test7",
+                "city_test7");
+        updateUser(client, user.getId(), "name_test7", "surname_test7", "address_updated",
+                "city_updated");
 
         client.close();
     }
@@ -91,15 +68,8 @@ public class UserTest extends UserActions{
     @Test
     public void doDelete() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.USERS);
 
-        HttpResponse response = client.execute(httpDelete);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        deleteUser(client, "");
 
         client.close();
     }
@@ -107,15 +77,10 @@ public class UserTest extends UserActions{
     @Test
     public void doDelete2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpDelete httpDelete = new HttpDelete(uriContext + "/" + NameResources.USERS + "/" + id);
 
-        HttpResponse response = client.execute(httpDelete);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
-
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
+        User user = addUser(client, "name_test8", "surname_test8", "address_test8",
+                "city_test8");
+        deleteUser(client, user.getId());
 
         client.close();
     }

@@ -38,9 +38,7 @@ public class UserPaymentClient {
         CloseableHttpResponse accountResponse = client.execute(httpPost);
         String accountBodyAsString = EntityUtils.toString(accountResponse.getEntity());
         ObjectMapper objectMapper = new ObjectMapper();
-        UserPayment accountRet = objectMapper.readValue(accountBodyAsString, UserPayment.class);
-
-        return accountRet;
+        return objectMapper.readValue(accountBodyAsString, UserPayment.class);
     }
 
     final protected UserPayment getUserPaymentById(CloseableHttpClient client, String id) throws IOException {
@@ -55,9 +53,7 @@ public class UserPaymentClient {
         assertThat(bodyAsString, notNullValue());
 
         ObjectMapper objectMapper = new ObjectMapper();
-        UserPayment userRet = objectMapper.readValue(bodyAsString, UserPayment.class);
-
-        return userRet;
+        return objectMapper.readValue(bodyAsString, UserPayment.class);
     }
 
     final protected UserPayment[] getAllUserPayments(CloseableHttpClient client) throws IOException {
@@ -72,12 +68,10 @@ public class UserPaymentClient {
         assertThat(bodyAsString, notNullValue());
 
         ObjectMapper objectMapper = new ObjectMapper();
-        UserPayment[] userRet = objectMapper.readValue(bodyAsString, UserPayment[].class);
-
-        return userRet;
+        return objectMapper.readValue(bodyAsString, UserPayment[].class);
     }
 
-    final protected UserPayment[] getUserPaymentsByAccount(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
+    final protected UserPayment[] getUserPaymentsByCondit(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
         HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS + "/" + srcTrg + "/" + userId);
 
         HttpResponse response = client.execute(httpGet);
@@ -89,8 +83,6 @@ public class UserPaymentClient {
         assertThat(bodyAsString, notNullValue());
 
         ObjectMapper objectMapper = new ObjectMapper();
-        UserPayment[] userRet = objectMapper.readValue(bodyAsString, UserPayment[].class);
-
-        return userRet;
+        return objectMapper.readValue(bodyAsString, UserPayment[].class);
     }
 }

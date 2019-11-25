@@ -142,13 +142,66 @@ public class UserPaymentTest {
 
         UserPayment[] userPayments = upc.getAllUserPayments(client);
 
-        UserPayment[] usersSrc = upc.getUserPaymentsByAccount(client, NameResources.USERS_PAYMENTS_SRC,
+        UserPayment[] usersSrc = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENTS_SRC,
                 userPayments[0].getSrcAccountId());
         Arrays.stream(usersSrc)
                 .forEach(System.out::println);
 
-        UserPayment[] usersTrg = upc.getUserPaymentsByAccount(client, NameResources.USERS_PAYMENT_TRG,
+        UserPayment[] usersTrg = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_TRG,
                 userPayments[0].getId());
+        Arrays.stream(usersTrg)
+                .forEach(System.out::println);
+
+        client.close();
+    }
+
+    @Test
+    public void doGet3() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        // Create 2 users
+        User user1 = uc.addUser(client, "user1C_name", "user1C_surname", "user1C_address",
+                "user1C_city");
+        User user2 = uc.addUser(client, "user2C_name", "user2C_surname", "user2C_address",
+                "user2C_city");
+        User user3 = uc.addUser(client, "user3C_name", "user3C_surname", "user3C_address",
+                "user3C_city");
+        User user4 = uc.addUser(client, "user4C_name", "user4C_surname", "user4C_address",
+                "user4C_city");
+        User user5 = uc.addUser(client, "user5C_name", "user5C_surname", "user5C_address",
+                "user5C_city");
+
+        // Create 2 accounts
+        Account account1 = ac.addAccount(client, user1.getId());
+        Account account2 = ac.addAccount(client, user2.getId());
+        Account account3 = ac.addAccount(client, user3.getId());
+        Account account4 = ac.addAccount(client, user4.getId());
+        Account account5 = ac.addAccount(client, user5.getId());
+
+        // Add money to the accounts
+        Account acc1Updated = ac.updateAccount(client, account1.getId(), new BigDecimal(800));
+        Account acc2Updated = ac.updateAccount(client, account2.getId(), new BigDecimal(200));
+        Account acc3Updated = ac.updateAccount(client, account3.getId(), new BigDecimal(700));
+        Account acc4Updated = ac.updateAccount(client, account4.getId(), new BigDecimal(800));
+        Account acc5Updated = ac.updateAccount(client, account5.getId(), new BigDecimal(900));
+
+        // Do transaction
+        upc.addUserPayment(client, acc1Updated.getId(), new BigDecimal(100), acc2Updated.getId());
+        upc.addUserPayment(client, acc1Updated.getId(), new BigDecimal(300), acc2Updated.getId());
+        upc.addUserPayment(client, acc1Updated.getId(), new BigDecimal(50), acc2Updated.getId());
+        upc.addUserPayment(client, acc2Updated.getId(), new BigDecimal(50), acc1Updated.getId());
+        upc.addUserPayment(client, acc1Updated.getId(), new BigDecimal(100), acc3Updated.getId());
+        upc.addUserPayment(client, acc3Updated.getId(), new BigDecimal(100), acc1Updated.getId());
+        upc.addUserPayment(client, acc3Updated.getId(), new BigDecimal(100), acc4Updated.getId());
+        upc.addUserPayment(client, acc4Updated.getId(), new BigDecimal(100), acc5Updated.getId());
+
+        UserPayment[] usersSrc = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_USER_SRC,
+                user1.getId());
+        Arrays.stream(usersSrc)
+                .forEach(System.out::println);
+
+        UserPayment[] usersTrg = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_USER_TRG,
+                user3.getId());
         Arrays.stream(usersTrg)
                 .forEach(System.out::println);
 

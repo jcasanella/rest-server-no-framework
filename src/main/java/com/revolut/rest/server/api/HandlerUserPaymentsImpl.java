@@ -35,6 +35,12 @@ public class HandlerUserPaymentsImpl extends Handler {
             } else if (args.size() == 2 && args.get(0).equals(NameResources.USERS_PAYMENT_TRG)) {
                 List<UserPayment> userPayments = ui.getByTrgAccount(args.get(1));
                 set(exchange, userPayments);
+            } else if (args.size() == 2 && args.get(0).equals(NameResources.USERS_PAYMENT_USER_SRC)) {
+                List<UserPayment> userPayments = ui.getBySrcUser(args.get(1));
+                set(exchange, userPayments);
+            } else if (args.size() == 2 && args.get(0).equals(NameResources.USERS_PAYMENT_USER_TRG)) {
+                List<UserPayment> userPayments = ui.getByTrgUser(args.get(1));
+                set(exchange, userPayments);
             } else if (args.size() == 1) {
                 UserPayment userPayment = ui.get(args.get(0));
                 set(exchange, userPayment);

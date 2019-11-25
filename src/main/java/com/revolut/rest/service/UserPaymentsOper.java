@@ -1,6 +1,7 @@
 package com.revolut.rest.service;
 
 import com.revolut.rest.data.DataMemory;
+import com.revolut.rest.model.Account;
 import com.revolut.rest.model.UserPayment;
 import io.vavr.control.Try;
 
@@ -73,6 +74,28 @@ public class UserPaymentsOper {
     public List<UserPayment> getByTrgAccount(String trgId) {
         return DataMemory.userPayments.stream()
                 .filter(y -> y.getTrgAccountId().equals(trgId))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserPayment> getBySrcUser(String userId) {
+        List<String> accountsId = DataMemory.accounts.values().stream()
+                .filter(x -> x.getUserId().equals(userId))
+                .map(Account::getId)
+                .collect(Collectors.toList());
+
+        return DataMemory.userPayments.stream()
+                .filter(x -> accountsId.contains(x.getSrcAccountId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserPayment> getByTrgUser(String userId) {
+        List<String> accountsId = DataMemory.accounts.values().stream()
+                .filter(x -> x.getUserId().equals(userId))
+                .map(Account::getId)
+                .collect(Collectors.toList());
+
+        return DataMemory.userPayments.stream()
+                .filter(x -> accountsId.contains(x.getTrgAccountId()))
                 .collect(Collectors.toList());
     }
 }

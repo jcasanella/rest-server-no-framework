@@ -23,7 +23,7 @@ public class UserPaymentClient {
 
     private final String uriContext = "http://localhost:8001/" + NameResources.VERSION;
 
-    final protected UserPayment addUserAccount(CloseableHttpClient client, String srcAccountId, BigDecimal quantity,
+    final protected UserPayment addUserPayment(CloseableHttpClient client, String srcAccountId, BigDecimal quantity,
                                                String trgAccountId) throws IOException {
 
         HttpPost httpPost = new HttpPost(uriContext + "/" + NameResources.USERS_PAYMENTS);
@@ -43,8 +43,8 @@ public class UserPaymentClient {
         return accountRet;
     }
 
-    final protected UserPayment getUserPayment(CloseableHttpClient client, String userPaymentId) throws IOException {
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS + "/" + userPaymentId);
+    final protected UserPayment getUserPaymentById(CloseableHttpClient client, String id) throws IOException {
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS + "/" + id);
 
         HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();
@@ -77,8 +77,9 @@ public class UserPaymentClient {
         return userRet;
     }
 
-    final protected UserPayment[] getUserPayments(CloseableHttpClient client, String userId) throws IOException {
-        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS);
+    final protected UserPayment[] getUserPaymentsByUsr(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
+        HttpGet httpGet = new HttpGet(uriContext + "/" + srcTrg + "/" +
+                NameResources.USERS_PAYMENTS_SRC + userId);
 
         HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();

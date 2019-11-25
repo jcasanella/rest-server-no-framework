@@ -8,4 +8,6 @@ public class NameResources {
     public static final String ACCOUNTS = "accounts-service";
 
     public static final String USERS_PAYMENTS = "users-payments-service";
+    public static final String USERS_PAYMENTS_SRC = "src";
+    public static final String USERS_PAYMENT_TRG = "trg";
 }

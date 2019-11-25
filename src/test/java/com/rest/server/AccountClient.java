@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AccountClient {
@@ -31,11 +30,12 @@ public class AccountClient {
         httpPost.setHeader("Content-type", "application/json");
 
         CloseableHttpResponse accountResponse = client.execute(httpPost);
+        int statusCode2 = accountResponse.getStatusLine().getStatusCode();
+        assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
+
         String accountBodyAsString = EntityUtils.toString(accountResponse.getEntity());
         ObjectMapper objectMapper = new ObjectMapper();
-        Account accountRet = objectMapper.readValue(accountBodyAsString, Account.class);
-
-        return accountRet;
+        return objectMapper.readValue(accountBodyAsString, Account.class);
     }
 
     final protected Account getAccount(CloseableHttpClient client, String accountId) throws IOException {
@@ -46,12 +46,8 @@ public class AccountClient {
         assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString2 = EntityUtils.toString(response2.getEntity());
-        assertThat(bodyAsString2, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
-        Account accountRet = objectMapper.readValue(bodyAsString2, Account.class);
-
-        return accountRet;
+        return objectMapper.readValue(bodyAsString2, Account.class);
     }
 
     final protected Account[] getAccounts(CloseableHttpClient client) throws IOException {
@@ -62,13 +58,8 @@ public class AccountClient {
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
-        Account[] accounts = objectMapper.readValue(bodyAsString, Account[].class);
-
-        return accounts;
+        return objectMapper.readValue(bodyAsString, Account[].class);
     }
 
     final protected boolean deleteAccount(CloseableHttpClient client, String accountId) throws IOException {
@@ -79,10 +70,8 @@ public class AccountClient {
         assertThat(statusCode2, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString2 = EntityUtils.toString(response2.getEntity());
-        System.out.println(bodyAsString2);
-        assertThat(bodyAsString2, notNullValue());
-
-        return Boolean.parseBoolean(bodyAsString2);
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(bodyAsString2, Boolean.class);
     }
 
     final protected Account updateAccount(CloseableHttpClient client, String accountId, BigDecimal quantity) throws IOException {
@@ -99,12 +88,7 @@ public class AccountClient {
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString3 = EntityUtils.toString(response3.getEntity());
-        System.out.println(bodyAsString3);
-        assertThat(bodyAsString3, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
-        Account accUpdated = objectMapper.readValue(bodyAsString3, Account.class);
-
-        return accUpdated;
+        return objectMapper.readValue(bodyAsString3, Account.class);
     }
 }

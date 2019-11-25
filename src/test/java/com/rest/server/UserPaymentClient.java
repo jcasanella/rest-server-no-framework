@@ -36,6 +36,9 @@ public class UserPaymentClient {
         httpPost.setHeader("Content-type", "application/json");
 
         CloseableHttpResponse accountResponse = client.execute(httpPost);
+        int statusCode = accountResponse.getStatusLine().getStatusCode();
+        assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
+
         String accountBodyAsString = EntityUtils.toString(accountResponse.getEntity());
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(accountBodyAsString, UserPayment.class);
@@ -49,9 +52,6 @@ public class UserPaymentClient {
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(bodyAsString, UserPayment.class);
     }
@@ -64,9 +64,6 @@ public class UserPaymentClient {
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(bodyAsString, UserPayment[].class);
     }
@@ -79,9 +76,6 @@ public class UserPaymentClient {
         assertThat(statusCode, equalTo(StatusCode.OK.getCode()));
 
         String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
-        assertThat(bodyAsString, notNullValue());
-
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(bodyAsString, UserPayment[].class);
     }

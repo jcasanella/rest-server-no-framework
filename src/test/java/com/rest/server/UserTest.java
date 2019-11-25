@@ -2,6 +2,7 @@ package com.rest.server;
 
 import com.revolut.rest.model.User;
 import com.revolut.rest.server.ServerRest;
+import com.revolut.rest.server.constants.NameResources;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.AfterClass;
@@ -12,6 +13,7 @@ import java.io.IOException;
 public class UserTest {
 
     private UserClient uc = new UserClient();
+    private ClientGeneric cg = new ClientGeneric();
 
     @BeforeClass
     public static void startUp() {
@@ -31,7 +33,9 @@ public class UserTest {
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-       uc.addUser(client, "test_name", "surname_test", "address_test", "city_test");
+        String userJson = "{\"name\": \"test_name\" , \"surname\" : \"surname_test\" , \"address\" : \"address_test\" , " +
+                "\"city\" : \"city_test\"}";
+        User added = cg.add(client, userJson, NameResources.USERS, User.class);
 
         client.close();
     }
@@ -40,8 +44,10 @@ public class UserTest {
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = uc.addUser(client, "test_name", "surname_test", "address_test", "city_test");
-        uc.getUser(client, user.getId());
+        String userJson = "{\"name\": \"test_name\" , \"surname\" : \"surname_test\" , \"address\" : \"address_test\" , " +
+                "\"city\" : \"city_test\"}";
+        User added = cg.add(client, userJson, NameResources.USERS, User.class);
+        uc.getUser(client, added.getId());
 
         client.close();
     }
@@ -59,9 +65,10 @@ public class UserTest {
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = uc.addUser(client, "name_test7", "surname_test7", "address_test7",
-                "city_test7");
-        uc.updateUser(client, user.getId(), "name_test7", "surname_test7", "address_updated",
+        String userJson = "{\"name\": \"name_test7\" , \"surname\" : \"surname_test7\" , \"address\" : \"address_test7\" , " +
+                "\"city\" : \"city_test7\"}";
+        User added = cg.add(client, userJson, NameResources.USERS, User.class);
+        uc.updateUser(client, added.getId(), "name_test7", "surname_test7", "address_updated",
                 "city_updated");
 
         client.close();
@@ -80,9 +87,10 @@ public class UserTest {
     public void doDelete2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        User user = uc.addUser(client, "name_test8", "surname_test8", "address_test8",
-                "city_test8");
-        uc.deleteUser(client, user.getId());
+        String userJson = "{\"name\": \"name_test8\" , \"surname\" : \"surname_test8\" , \"address\" : \"address_test8\" , " +
+                "\"city\" : \"city_test8\"}";
+        User added = cg.add(client, userJson, NameResources.USERS, User.class);
+        uc.deleteUser(client, added.getId());
 
         client.close();
     }

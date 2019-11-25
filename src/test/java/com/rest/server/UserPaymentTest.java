@@ -20,6 +20,7 @@ public class UserPaymentTest {
     private UserClient uc = new UserClient();
     private AccountClient ac = new AccountClient();
     private UserPaymentClient upc = new UserPaymentClient();
+    private ClientGeneric cg = new ClientGeneric();
 
     @BeforeClass
     public static void startUp() {
@@ -35,15 +36,20 @@ public class UserPaymentTest {
         thread.start();
     }
 
+    public String buildJsonUser(String name, String surname, String address, String city) {
+        return String.format("{\"name\": \"%s\" , \"surname\" : \"%s\" , \"address\" : \"%s\" , \"city\" : \"%s\"}",
+                name, surname, address, city);
+    }
+
     @Test
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users
-        User user1 = uc.addUser(client, "user1_name", "user1_surname", "user1_address",
-                "user1_city");
-        User user2 = uc.addUser(client, "user2_name", "user2_surname", "user2_address",
-                "user2_city");
+        String json1 = buildJsonUser("user1_name", "user1_surname", "user1_address", "user1_city");
+        User user1 = cg.add(client, json1, NameResources.USERS, User.class);
+        String json2 = buildJsonUser("user2_name", "user2_surname", "user2_address", "user2_city");
+        User user2 = cg.add(client, json1, NameResources.USERS, User.class);
 
         // Create 2 accounts
         Account account1 = ac.addAccount(client, user1.getId());
@@ -72,10 +78,10 @@ public class UserPaymentTest {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users
-        User user1 = uc.addUser(client, "user1A_name", "user1A_surname", "user1A_address",
-                "user1A_city");
-        User user2 = uc.addUser(client, "user2A_name", "user2A_surname", "user2A_address",
-                "user2A_city");
+        String json1 = buildJsonUser("user1A_name", "user1A_surname", "user1A_address", "user1A_city");
+        User user1 = cg.add(client, json1, NameResources.USERS, User.class);
+        String json2 = buildJsonUser("user2A_name", "user2A_surname", "user2A_address", "user2A_city");
+        User user2 = cg.add(client, json2, NameResources.USERS, User.class);
 
         // Create 2 accounts
         Account account1 = ac.addAccount(client, user1.getId());
@@ -105,16 +111,21 @@ public class UserPaymentTest {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users
-        User user1 = uc.addUser(client, "user1B_name", "user1B_surname", "user1B_address",
+        String json1 = buildJsonUser("user1B_name", "user1B_surname", "user1B_address",
                 "user1B_city");
-        User user2 = uc.addUser(client, "user2B_name", "user2B_surname", "user2B_address",
+        User user1 = cg.add(client, json1, NameResources.USERS, User.class);
+        String json2 = buildJsonUser("user2B_name", "user2B_surname", "user2B_address",
                 "user2B_city");
-        User user3 = uc.addUser(client, "user3B_name", "user3B_surname", "user3B_address",
+        User user2 = cg.add(client, json2, NameResources.USERS, User.class);
+        String json3 = buildJsonUser("user3B_name", "user3B_surname", "user3B_address",
                 "user3B_city");
-        User user4 = uc.addUser(client, "user4B_name", "user4B_surname", "user4B_address",
+        User user3 = cg.add(client, json3, NameResources.USERS, User.class);
+        String json4 = buildJsonUser("user4B_name", "user4B_surname", "user4B_address",
                 "user4B_city");
-        User user5 = uc.addUser(client, "user5B_name", "user5B_surname", "user5B_address",
+        User user4 = cg.add(client, json4, NameResources.USERS, User.class);
+        String json5 = buildJsonUser("user5B_name", "user5B_surname", "user5B_address",
                 "user5B_city");
+        User user5 = cg.add(client, json5, NameResources.USERS, User.class);
 
         // Create 2 accounts
         Account account1 = ac.addAccount(client, user1.getId());
@@ -160,16 +171,21 @@ public class UserPaymentTest {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users
-        User user1 = uc.addUser(client, "user1C_name", "user1C_surname", "user1C_address",
+        String json1 = buildJsonUser("user1C_name", "user1C_surname", "user1C_address",
                 "user1C_city");
-        User user2 = uc.addUser(client, "user2C_name", "user2C_surname", "user2C_address",
+        User user1 = cg.add(client, json1, NameResources.USERS, User.class);
+        String json2 = buildJsonUser("user2C_name", "user2C_surname", "user2C_address",
                 "user2C_city");
-        User user3 = uc.addUser(client, "user3C_name", "user3C_surname", "user3C_address",
+        User user2 = cg.add(client, json2, NameResources.USERS, User.class);
+        String json3 = buildJsonUser("user3C_name", "user3C_surname", "user3C_address",
                 "user3C_city");
-        User user4 = uc.addUser(client, "user4C_name", "user4C_surname", "user4C_address",
+        User user3 = cg.add(client, json3, NameResources.USERS, User.class);
+        String json4 = buildJsonUser("user4C_name", "user4C_surname", "user4C_address",
                 "user4C_city");
-        User user5 = uc.addUser(client, "user5C_name", "user5C_surname", "user5C_address",
+        User user4 = cg.add(client, json4, NameResources.USERS, User.class);
+        String json5 = buildJsonUser("user5C_name", "user5C_surname", "user5C_address",
                 "user5C_city");
+        User user5 = cg.add(client, json5, NameResources.USERS, User.class);
 
         // Create 2 accounts
         Account account1 = ac.addAccount(client, user1.getId());

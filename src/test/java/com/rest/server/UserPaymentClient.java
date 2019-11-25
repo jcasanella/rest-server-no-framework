@@ -77,7 +77,7 @@ public class UserPaymentClient {
         return userRet;
     }
 
-    final protected UserPayment[] getUserPaymentsByUsr(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
+    final protected UserPayment[] getUserPaymentsByAccount(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
         HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS + "/" + srcTrg + "/" + userId);
 
         HttpResponse response = client.execute(httpGet);

@@ -27,17 +27,17 @@ public class HandlerUserPaymentsImpl extends Handler {
             log.info("Processing GET " + exchange.getRequestURI().toString());
             List<String> args = getParam(exchange.getRequestURI().toString(), NameResources.USERS_PAYMENTS);
             if (args.isEmpty()) {   // Get all
-                List<UserPayment> users = ui.getAll();
-                set(exchange, users);
+                List<UserPayment> userPayments = ui.getAll();
+                set(exchange, userPayments);
             } else if (args.size() == 2 && args.get(0).equals(NameResources.USERS_PAYMENTS_SRC)) {
-                List<UserPayment> users = ui.getByUserSrc(args.get(1));
-                set(exchange, users);
+                List<UserPayment> userPayments = ui.getBySrcAccount(args.get(1));
+                set(exchange, userPayments);
             } else if (args.size() == 2 && args.get(0).equals(NameResources.USERS_PAYMENT_TRG)) {
-                List<UserPayment> users = ui.getByUserTrg(args.get(1));
-                set(exchange, users);
+                List<UserPayment> userPayments = ui.getByTrgAccount(args.get(1));
+                set(exchange, userPayments);
             } else if (args.size() == 1) {
-                UserPayment user = ui.get(args.get(0));
-                set(exchange, user);
+                UserPayment userPayment = ui.get(args.get(0));
+                set(exchange, userPayment);
             } else {
                 throw new Exception("Bad arguments");
             }

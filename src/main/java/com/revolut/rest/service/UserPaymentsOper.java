@@ -64,19 +64,15 @@ public class UserPaymentsOper {
         return DataMemory.userPayments.stream().collect(Collectors.toList());
     }
 
-    public List<UserPayment> getByUserSrc(String srcId) {
-        return Try.of(() -> DataMemory.users.get(srcId))
-                .onFailure(ex -> new RuntimeException())
-                .mapTry(x -> DataMemory.userPayments.stream()
-                        .filter(y -> y.getSrcAccountId().equals(srcId))
-                        .collect(Collectors.toList())).get();
+    public List<UserPayment> getBySrcAccount(String srcId) {
+        return DataMemory.userPayments.stream()
+                .filter(y -> y.getSrcAccountId().equals(srcId))
+                .collect(Collectors.toList());
     }
 
-    public List<UserPayment> getByUserTrg(String trgId) {
-        return Try.of(() -> DataMemory.users.get(trgId))
-                .onFailure(ex -> new RuntimeException())
-                .mapTry(x -> DataMemory.userPayments.stream()
-                    .filter(y -> y.getTrgAccountId().equals(trgId))
-                    .collect(Collectors.toList())).get();
+    public List<UserPayment> getByTrgAccount(String trgId) {
+        return DataMemory.userPayments.stream()
+                .filter(y -> y.getTrgAccountId().equals(trgId))
+                .collect(Collectors.toList());
     }
 }

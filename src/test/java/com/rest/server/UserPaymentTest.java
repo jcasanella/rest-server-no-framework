@@ -101,7 +101,7 @@ public class UserPaymentTest {
     }
 
     @Test
-    public void doGetx2() throws IOException {
+    public void doGet2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users
@@ -142,12 +142,12 @@ public class UserPaymentTest {
 
         UserPayment[] userPayments = upc.getAllUserPayments(client);
 
-        UserPayment[] usersSrc = upc.getUserPaymentsByUsr(client, NameResources.USERS_PAYMENTS_SRC,
-                userPayments[0].getId());
+        UserPayment[] usersSrc = upc.getUserPaymentsByAccount(client, NameResources.USERS_PAYMENTS_SRC,
+                userPayments[0].getSrcAccountId());
         Arrays.stream(usersSrc)
                 .forEach(System.out::println);
 
-        UserPayment[] usersTrg = upc.getUserPaymentsByUsr(client, NameResources.USERS_PAYMENT_TRG,
+        UserPayment[] usersTrg = upc.getUserPaymentsByAccount(client, NameResources.USERS_PAYMENT_TRG,
                 userPayments[0].getId());
         Arrays.stream(usersTrg)
                 .forEach(System.out::println);

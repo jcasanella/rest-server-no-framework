@@ -78,8 +78,7 @@ public class UserPaymentClient {
     }
 
     final protected UserPayment[] getUserPaymentsByUsr(CloseableHttpClient client, String srcTrg, String userId) throws IOException {
-        HttpGet httpGet = new HttpGet(uriContext + "/" + srcTrg + "/" +
-                NameResources.USERS_PAYMENTS_SRC + userId);
+        HttpGet httpGet = new HttpGet(uriContext + "/" + NameResources.USERS_PAYMENTS + "/" + srcTrg + "/" + userId);
 
         HttpResponse response = client.execute(httpGet);
         int statusCode = response.getStatusLine().getStatusCode();

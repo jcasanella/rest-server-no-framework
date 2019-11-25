@@ -101,7 +101,7 @@ public class UserPaymentTest {
     }
 
     @Test
-    public void doGet2() throws IOException {
+    public void doGetx2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
         // Create 2 users

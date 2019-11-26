@@ -46,22 +46,56 @@ curl -X PUT    localhost:8001/v1/users-service -d '{ "id": "test_test", "name": 
 
 ## Accounts operations
 
+* Add an account
 ```
 curl -X POST   localhost:8001/v1/accounts-service -d '{"userId": "test_test", "balance": "0"}'
-curl -X GET    localhost:8001/v1/accounts-service
+```
+
+* Look for a specific account
+```
 curl -X GET    localhost:8001/v1/accounts-service/{accountId}
+```
+
+* Get all existing accounts
+```
+curl -X GET    localhost:8001/v1/accounts-service
+```
+
+* Drop an existing account
+```
 curl -X DELETE localhost:8001/v1/accounts-service/{accountId}
+```
+
+* Add money to your account
+```
 curl -x UPDATE localhost:8001/v1/accounts-service -d '{"id": "idAccount", "balance": "2000"}'
 ```
 
 ## UserPayment operations
 
+* Send money to another user
 ```
 curl -X POST localhost:8001/v1/users-payments-service -d '{"srcAccountId": "srcId", "quantity": "300", "trgAccountId": "trgId"}"'
-curl -X GET  localhost:8001/v1/users-payments-service
+```
+
+* Get user payment by userpaymentid
+```
 curl -X GET  localhost:8001/v1/users-payments-service/{userPaymentId}
+```
+
+* Get all existing user payments
+```
+curl -X GET  localhost:8001/v1/users-payments-service
+```
+
+* Get all the payments by accountSrc or accountTrg
+```
 curl -X GET  localhost:8001/v1/users-payments-service/src/{accountId}
 curl -X GET  localhost:8001/v1/users-payments-service/trg/{accountId}
+```
+
+* Get all the payments by usrSrc or usrTrg
+```
 curl -X GET  localhost:8001/v1/users-payments-service/user_src/{accountId}
 curl -X GET  localhost:8001/v1/users-payments-service/user_trg/{accountId}
 ```

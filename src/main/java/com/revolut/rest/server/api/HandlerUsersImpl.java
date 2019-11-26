@@ -49,7 +49,7 @@ public class HandlerUsersImpl extends Handler {
             log.info("Processing PUT " + exchange.getRequestURI().toString());
             User user = get(exchange, User.class);
             User updated = (User) ui.update(user);
-            set(exchange, (updated != null && user != updated));
+            set(exchange, updated);
         } else {
             throw new Exception("Bad Request");
         }

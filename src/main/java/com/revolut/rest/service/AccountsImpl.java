@@ -11,11 +11,10 @@ public class AccountsImpl implements DataOper<Account> {
     // TODO improve errors
     @Override
     public Account add(Account a) {
-        User user = DataMemory.users.get(a.getUserId());
-        if (user == null)
+        if (DataMemory.accounts.containsKey(a.getId()))
             return null;
-        else
-            return DataMemory.accounts.put(a.getId(), a);
+
+        return DataMemory.accounts.put(a.getId(), a);
     }
 
     @Override
@@ -30,11 +29,14 @@ public class AccountsImpl implements DataOper<Account> {
 
     @Override
     public Account update(Account a) {
-        Account toBeUpdated = DataMemory.accounts.get(a.getId());
+        if (!DataMemory.accounts.containsKey(a.getId()))
+            return null;
 
         try {
+            Account toBeUpdated = DataMemory.accounts.get(a.getId());
             toBeUpdated.addQuantity(a.getBalance());
-            return DataMemory.accounts.put(toBeUpdated.getId(), toBeUpdated);
+            DataMemory.accounts.put(toBeUpdated.getId(), toBeUpdated);
+            return toBeUpdated;
         } catch (Exception ex) {
             return null;
         }

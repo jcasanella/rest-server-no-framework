@@ -10,6 +10,9 @@ public class UsersImpl implements DataOper<User> {
 
     @Override
     public User add(User a) {
+        if (DataMemory.users.containsKey(a.getId()))
+            return null;
+
         return DataMemory.users.put(a.getId(), a);
     }
 
@@ -32,6 +35,10 @@ public class UsersImpl implements DataOper<User> {
 
     @Override
     public User update(User a) {
-        return add(a);
+        if (!DataMemory.users.containsKey(a.getId()))
+            return null;
+
+        DataMemory.users.put(a.getId(), a);
+        return a;
     }
 }

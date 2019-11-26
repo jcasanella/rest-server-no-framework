@@ -1,5 +1,6 @@
 package com.rest.server;
 
+import com.revolut.rest.data.DataMemory;
 import com.revolut.rest.model.Account;
 import com.revolut.rest.model.User;
 import com.revolut.rest.model.UserPayment;
@@ -14,6 +15,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+
+import static junit.framework.TestCase.assertEquals;
 
 public class UserPaymentTest {
 
@@ -45,30 +48,54 @@ public class UserPaymentTest {
         User user1 = cg.add(client, json1, NameResources.USERS, User.class);
         String json2 = cg.buildJsonUser("user2_name", "user2_surname", "user2_address", "user2_city");
         User user2 = cg.add(client, json2, NameResources.USERS, User.class);
+        int size1 = DataMemory.users.size();
+        assert(size1 >= 2);
 
         // Create 2 accounts
         String accountJson1 = cg.buildJsonAccount(user1.getId());
         Account account1 = cg.add(client, accountJson1, NameResources.ACCOUNTS, Account.class);
         String accountJson2 = cg.buildJsonAccount(user2.getId());
         Account account2 = cg.add(client, accountJson2, NameResources.ACCOUNTS, Account.class);
+        int size2 = DataMemory.accounts.size();
+        assert(size2 >= 2);
 
         // Add money to the accounts
         String jsonUpd1 = cg.buildJsonUpdateAccount(account1.getId(), new BigDecimal(500));
         Account acc1Updated = cg.update(client, jsonUpd1, NameResources.ACCOUNTS, Account.class);
         String jsonUpd2 = cg.buildJsonUpdateAccount(account2.getId(), new BigDecimal(600));
         Account acc2Updated = cg.update(client, jsonUpd2, NameResources.ACCOUNTS, Account.class);
+        assertEquals(acc1Updated.getUserId(), account1.getUserId());
+        assertEquals(acc1Updated.getId(), account1.getId());
+        String bal1a = acc1Updated.getBalance().setScale(3).toPlainString();
+        String bal1b = account1.getBalance().add(new BigDecimal(500)).setScale(3).toPlainString();
+        assertEquals(bal1a, bal1b);
+        assertEquals(acc2Updated.getUserId(), account2.getUserId());
+        assertEquals(acc2Updated.getId(), account2.getId());
+        String bal2a = acc2Updated.getBalance().setScale(3).toPlainString();
+        String bal2b = account2.getBalance().add(new BigDecimal(600)).setScale(3).toPlainString();
+        assertEquals(bal2a, bal2b);
 
         // Do transaction
         String userPaymentJson = cg.buildJsonUserPayments(acc1Updated.getId(), new BigDecimal(300),
                 acc2Updated.getId());
+        int size3 = DataMemory.userPayments.size();
         UserPayment userPayment = cg.add(client, userPaymentJson, NameResources.USERS_PAYMENTS, UserPayment.class);
+        int size4 = DataMemory.userPayments.size();
+        assert(size4 > size3);
+        assertEquals(userPayment.getSrcAccountId(), acc1Updated.getId());
+        assertEquals(userPayment.getTrgAccountId(), acc2Updated.getId());
 
         // Check status operation
         Account acc1After = cg.getElement(client, acc1Updated.getId(), NameResources.ACCOUNTS, Account.class);
         Account acc2After = cg.getElement(client, acc2Updated.getId(), NameResources.ACCOUNTS, Account.class);
 
-        System.out.println(acc1After);
-        System.out.println(acc2After);
+        String acc1 = acc1After.getBalance().setScale(3).toPlainString();
+        String acc2 = new BigDecimal(200).setScale(3).toPlainString();
+        assertEquals(acc1, acc2);
+
+        String acc1b = acc2After.getBalance().setScale(3).toPlainString();
+        String acc2b = new BigDecimal(900).setScale(3).toPlainString();
+        assertEquals(acc1, acc2);
 
         client.close();
     }
@@ -103,13 +130,10 @@ public class UserPaymentTest {
         String userPaymentJson3 = cg.buildJsonUserPayments(acc1Updated.getId(), new BigDecimal(50), acc2Updated.getId());
         cg.add(client, userPaymentJson3, NameResources.USERS_PAYMENTS, UserPayment.class);
 
-
         UserPayment[] userPayments = cg.getElements(client, NameResources.USERS_PAYMENTS, UserPayment[].class);
-        Arrays.stream(userPayments)
-                .forEach(System.out::println);
+
 
         UserPayment searchUserPayment = cg.getElement(client, userPayments[0].getId(), NameResources.USERS_PAYMENTS, UserPayment.class);
-        System.out.println(searchUserPayment);
 
         client.close();
     }
@@ -160,6 +184,7 @@ public class UserPaymentTest {
         Account acc5Updated = cg.update(client, jsonUpd5, NameResources.ACCOUNTS, Account.class);
 
         // Do transaction
+        int size1 = DataMemory.userPayments.size();
         String userPaymentJson1 = cg.buildJsonUserPayments(acc1Updated.getId(), new BigDecimal(100), acc2Updated.getId());
         cg.add(client, userPaymentJson1, NameResources.USERS_PAYMENTS, UserPayment.class);
         String userPaymentJson2 = cg.buildJsonUserPayments(acc1Updated.getId(), new BigDecimal(300), acc2Updated.getId());
@@ -178,16 +203,15 @@ public class UserPaymentTest {
         cg.add(client, userPaymentJson8, NameResources.USERS_PAYMENTS, UserPayment.class);
 
         UserPayment[] userPayments = cg.getElements(client, NameResources.USERS_PAYMENTS, UserPayment[].class);
+        assert(userPayments.length > size1);
 
         UserPayment[] usersSrc = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENTS_SRC,
                 userPayments[0].getSrcAccountId());
-        Arrays.stream(usersSrc)
-                .forEach(System.out::println);
+        assert(usersSrc.length > 0);
 
         UserPayment[] usersTrg = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_TRG,
-                userPayments[0].getId());
-        Arrays.stream(usersTrg)
-                .forEach(System.out::println);
+                userPayments[0].getTrgAccountId());
+        assert(usersTrg.length > 0);
 
         client.close();
     }
@@ -257,8 +281,6 @@ public class UserPaymentTest {
 
         UserPayment[] usersSrc = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_USER_SRC,
                 user1.getId());
-        Arrays.stream(usersSrc)
-                .forEach(System.out::println);
 
         UserPayment[] usersTrg = upc.getUserPaymentsByCondit(client, NameResources.USERS_PAYMENT_USER_TRG,
                 user3.getId());

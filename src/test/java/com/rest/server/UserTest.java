@@ -9,10 +9,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class UserTest {
 
-    private UserClient uc = new UserClient();
     private ClientGeneric cg = new ClientGeneric();
 
     @BeforeClass
@@ -33,8 +33,7 @@ public class UserTest {
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"test_name\" , \"surname\" : \"surname_test\" , \"address\" : \"address_test\" , " +
-                "\"city\" : \"city_test\"}";
+        String userJson = cg.buildJsonUser("test_name", "surname_test", "address_test", "city_test");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
 
         client.close();
@@ -44,10 +43,9 @@ public class UserTest {
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"test_name\" , \"surname\" : \"surname_test\" , \"address\" : \"address_test\" , " +
-                "\"city\" : \"city_test\"}";
+        String userJson = cg.buildJsonUser("test_name", "surname_test", "address_test", "city_test");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        uc.getUser(client, added.getId());
+        cg.getElement(client, added.getId(), NameResources.USERS, User.class);
 
         client.close();
     }
@@ -56,7 +54,8 @@ public class UserTest {
     public void doGetAll() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        uc.getUsers(client);
+        User[] users = cg.getElements(client, NameResources.USERS, User[].class);
+        Arrays.stream(users).forEach(System.out::println);
 
         client.close();
     }
@@ -65,11 +64,12 @@ public class UserTest {
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"name_test7\" , \"surname\" : \"surname_test7\" , \"address\" : \"address_test7\" , " +
-                "\"city\" : \"city_test7\"}";
+        String userJson = cg.buildJsonUser("name_test7", "surname_test7", "address_test7", "city_test7");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        uc.updateUser(client, added.getId(), "name_test7", "surname_test7", "address_updated",
+
+        String userUpdateJson = cg.buildJsonUpdateUser(added.getId(), "name_test7", "surname_test7", "address_updated",
                 "city_updated");
+        cg.update(client, userUpdateJson, NameResources.USERS, User.class);
 
         client.close();
     }
@@ -78,7 +78,7 @@ public class UserTest {
     public void doDelete() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        uc.deleteUser(client, "");
+        cg.delete(client, "", NameResources.USERS);
 
         client.close();
     }
@@ -87,10 +87,9 @@ public class UserTest {
     public void doDelete2() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"name_test8\" , \"surname\" : \"surname_test8\" , \"address\" : \"address_test8\" , " +
-                "\"city\" : \"city_test8\"}";
+        String userJson = cg.buildJsonUser("name_test8", "surname_test8", "address_test8", "city_test8");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        uc.deleteUser(client, added.getId());
+        cg.delete(client, added.getId(), NameResources.USERS);
 
         client.close();
     }

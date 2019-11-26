@@ -14,8 +14,6 @@ import java.math.BigDecimal;
 
 public class AccountTest {
 
-    private AccountClient ac = new AccountClient();
-
     private ClientGeneric cg = new ClientGeneric();
 
     @BeforeClass
@@ -36,10 +34,11 @@ public class AccountTest {
     public void doPost() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"nameTest\" , \"surname\" : \"surnameTest\" , \"address\" : \"addressTest\" , " +
-                "\"city\" : \"cityTest\"}";
+        String userJson = cg.buildJsonUser("nameTest", "surnameTest", "addressTest", "cityTest");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        ac.addAccount(client, added.getId());
+
+        String accountJson = cg.buildJsonAccount(added.getId());
+        cg.add(client, accountJson, NameResources.ACCOUNTS, Account.class);
 
         client.close();
     }
@@ -48,13 +47,14 @@ public class AccountTest {
     public void doGet() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"nameTest5\" , \"surname\" : \"surnameTest5\" , \"address\" : \"addressTest5\" , " +
-                "\"city\" : \"cityTest5\"}";
+        String userJson = cg.buildJsonUser("nameTest5", "surnameTest5", "addressTest5", "cityTest5");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        ac.addAccount(client, added.getId());
 
-        Account[] accounts = ac.getAccounts(client);
-        ac.getAccount(client, accounts[0].getId());
+        String accountJson = cg.buildJsonAccount(added.getId());
+        cg.add(client, accountJson, NameResources.ACCOUNTS, Account.class);
+
+        Account[] accounts = cg.getElements(client, NameResources.ACCOUNTS, Account[].class);
+        cg.getElement(client, accounts[0].getId(), NameResources.ACCOUNTS, Account.class);
 
         client.close();
     }
@@ -63,8 +63,8 @@ public class AccountTest {
     public void doDelete() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        Account[] accounts = ac.getAccounts(client);
-        ac.deleteAccount(client, accounts[0].getId());
+        Account[] accounts = cg.getElements(client, NameResources.ACCOUNTS, Account[].class);
+        cg.delete(client, accounts[0].getId(), NameResources.ACCOUNTS);
 
         client.close();
     }
@@ -73,11 +73,13 @@ public class AccountTest {
     public void doUpdate() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
 
-        String userJson = "{\"name\": \"nameTest2\" , \"surname\" : \"surnameTest2\" , \"address\" : \"addressTest2\" , " +
-                "\"city\" : \"cityTest2\"}";
+        String userJson = cg.buildJsonUser("nameTest2", "surnameTest2", "addressTest2", "cityTest2");
         User added = cg.add(client, userJson, NameResources.USERS, User.class);
-        Account account = ac.addAccount(client, added.getId());
-        ac.updateAccount(client, account.getId(), new BigDecimal(2000));
+        String accountJson = cg.buildJsonAccount(added.getId());
+        Account account = cg.add(client, accountJson, NameResources.ACCOUNTS, Account.class);
+
+        String jsonUpdate = cg.buildJsonUpdateAccount(account.getId(), new BigDecimal(2000));
+        cg.update(client, jsonUpdate, NameResources.ACCOUNTS, Account.class);
 
         client.close();
     }
